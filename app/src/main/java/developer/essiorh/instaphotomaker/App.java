@@ -5,7 +5,7 @@ import android.app.Application;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 /**
- * Created by Ilia
+ * Created by eSSiorh
  * on 30.10.16
  */
 

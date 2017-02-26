@@ -1,11 +1,15 @@
 package developer.essiorh.instaphotomaker;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
- * Created by Ilia
+ * Created by eSSiorh
  * on 30.10.16
  */
 
 public class NodesItem {
+
+    @SerializedName("thumbnail_src")
     private String thumbnailScr;
 
     public String getThumbnailScr() {

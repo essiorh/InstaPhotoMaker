@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
@@ -23,27 +22,24 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import developer.essiorh.instaphotomaker.data.rest.profile.GetProfileRestApi;
+import developer.essiorh.instaphotomaker.data.rest.profile.IGetProfileRestApi;
+import developer.essiorh.instaphotomaker.domain.profile.IProfileInteractor;
+import developer.essiorh.instaphotomaker.domain.profile.ProfileInteractor;
+import rx.Subscriber;
+
+/**
+ * Created by eSSiorh
+ * on 30.10.16
+ */
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String BASE_URL = "https://www.instagram.com/";
-    public static final String END_POINT = "/?__a=1";
     public static final String FAKE = "fake";
     private SimpleDraweeView ivFresco;
     private EditText etNick;
@@ -65,129 +61,45 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         hideKeyboard(view);
-        new DataLoaderAsyncTask().execute(nick.trim());
         pbLoading.setVisibility(View.VISIBLE);
         ivFresco.setVisibility(View.GONE);
+        IGetProfileRestApi restApi = new GetProfileRestApi();
+        IProfileInteractor interactor = new ProfileInteractor(restApi);
+        interactor.getProfile(new Subscriber<List<String>>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "onCompleted() called");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "onError() called with: e = [" + e + "]");
+            }
+
+            @Override
+            public void onNext(List<String> strings) {
+                Log.d(TAG, "onNext() called with: strings = [" + strings + "]");
+                if (strings == null || strings.size() == 0) {
+                    ivFresco.setImageDrawable(ContextCompat.getDrawable(MainActivity.this,
+                            R.drawable.love));
+                    Toast.makeText(MainActivity.this, "Аккаунт не найден, попробуй еще!",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                pbLoading.setVisibility(View.GONE);
+                ivFresco.setVisibility(View.VISIBLE);
+                ivFresco.setImageURI(strings.get(0));
+                Toast.makeText(MainActivity.this, "Фотка загружена", Toast.LENGTH_SHORT).show();
+            }
+        }, "ESSIORH999");
     }
 
     private void hideKeyboard(View view) {
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    class DataLoaderAsyncTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String stringBuilder = BASE_URL +
-                    strings[0] +
-                    END_POINT;
-            String json = getJSON(stringBuilder);
-            Log.d(TAG, "doInBackground: json = " + json);
-            User user = getUserFromJson(json);
-            if (user != null && user.getMedia() != null && user.getMedia().getNodesItemList() != null &&
-                    user.getMedia().getNodesItemList().size() > 0) {
-                Log.d(TAG, "doInBackground: user = " + user.getMedia().getNodesItemList().get(0).getThumbnailScr());
-                return user.getMedia().getNodesItemList().get(0).getThumbnailScr();
-            } else {
-                return FAKE;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String url) {
-            super.onPostExecute(url);
-            pbLoading.setVisibility(View.GONE);
-            ivFresco.setVisibility(View.VISIBLE);
-            if (url.equals(FAKE)) {
-                ivFresco.setImageDrawable(ContextCompat.getDrawable(MainActivity.this,
-                        R.drawable.love));
-                Toast.makeText(MainActivity.this, "Аккаунт не найден, попробуй еще!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            ivFresco.setImageURI(url);
-            Toast.makeText(MainActivity.this, "Фотка загружена", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public User getUserFromJson(String json) {
-        if (TextUtils.isEmpty(json)) {
-            return null;
-        }
-        User user = null;
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            if (!jsonObject.has("user")) {
-                return null;
-            }
-            JSONObject jsonUser = jsonObject.getJSONObject("user");
-            if (!jsonUser.has("media")) {
-                return null;
-            }
-            JSONObject jsonMedia = jsonUser.getJSONObject("media");
-            if (!jsonMedia.has("nodes")) {
-                return null;
-            }
-            JSONArray nodesArray = jsonMedia.getJSONArray("nodes");
-            List<NodesItem> nodesItemList = new ArrayList<>();
-            for (int i = 0; i < nodesArray.length(); i++) {
-                JSONObject jsonNode = nodesArray.getJSONObject(i);
-                if (!jsonNode.has("thumbnail_src")) {
-                    break;
-                }
-                NodesItem nodesItem = new NodesItem();
-                String thumbnailSrc = jsonNode.getString("thumbnail_src");
-                nodesItem.setThumbnailScr(thumbnailSrc);
-                nodesItemList.add(nodesItem);
-            }
-            user = new User();
-            Media media = new Media();
-            media.setNodesItemList(nodesItemList);
-            user.setMedia(media);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return user;
-    }
-
-    public String getJSON(String url) {
-        HttpURLConnection c = null;
-        try {
-            URL u = new URL(url);
-            c = (HttpURLConnection) u.openConnection();
-            c.connect();
-            int status = c.getResponseCode();
-
-            switch (status) {
-                case 200:
-                case 201:
-                    BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    br.close();
-                    return sb.toString();
-            }
-
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (c != null) {
-                try {
-                    c.disconnect();
-                } catch (Exception ex) {
-                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        return null;
     }
 
     private Bitmap getBitmap(Bitmap bitmap, Bitmap label) {
@@ -226,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
     }
 
     public Bitmap drawTextToBitmap(Context gContext,
