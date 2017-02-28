@@ -10,96 +10,37 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-
-import developer.essiorh.instaphotomaker.data.rest.profile.GetProfileRestApi;
-import developer.essiorh.instaphotomaker.data.rest.profile.IGetProfileRestApi;
-import developer.essiorh.instaphotomaker.domain.profile.IProfileInteractor;
-import developer.essiorh.instaphotomaker.domain.profile.ProfileInteractor;
-import rx.Subscriber;
 
 /**
  * Created by eSSiorh
  * on 30.10.16
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainRouter {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String FAKE = "fake";
-    private SimpleDraweeView ivFresco;
-    private EditText etNick;
-    private ProgressBar pbLoading;
+    public static final String MAIN_FRAGMENT = "MAIN_FRAGMENT";
+    public static final String DETAIL_FRAGMENT = "DETAIL_FRAGMENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ivFresco = (SimpleDraweeView) findViewById(R.id.ivFresco);
-        etNick = (EditText) findViewById(R.id.etNick);
-        pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
     }
 
-    public void loadImage(View view) {
-        String nick = etNick.getText().toString();
-        if (TextUtils.isEmpty(nick.trim())) {
-            Toast.makeText(this, "Введите не пустой ник", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        hideKeyboard(view);
-        pbLoading.setVisibility(View.VISIBLE);
-        ivFresco.setVisibility(View.GONE);
-        IGetProfileRestApi restApi = new GetProfileRestApi();
-        IProfileInteractor interactor = new ProfileInteractor(restApi);
-        interactor.getProfile(new Subscriber<List<String>>() {
-            @Override
-            public void onCompleted() {
-                Log.d(TAG, "onCompleted() called");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "onError() called with: e = [" + e + "]");
-            }
-
-            @Override
-            public void onNext(List<String> strings) {
-                Log.d(TAG, "onNext() called with: strings = [" + strings + "]");
-                if (strings == null || strings.size() == 0) {
-                    ivFresco.setImageDrawable(ContextCompat.getDrawable(MainActivity.this,
-                            R.drawable.love));
-                    Toast.makeText(MainActivity.this, "Аккаунт не найден, попробуй еще!",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                pbLoading.setVisibility(View.GONE);
-                ivFresco.setVisibility(View.VISIBLE);
-                ivFresco.setImageURI(strings.get(0));
-                Toast.makeText(MainActivity.this, "Фотка загружена", Toast.LENGTH_SHORT).show();
-            }
-        }, "ESSIORH999");
-    }
-
-    private void hideKeyboard(View view) {
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.flContainer, new MainFragment(), MAIN_FRAGMENT)
+                .commit();
     }
 
     private Bitmap getBitmap(Bitmap bitmap, Bitmap label) {
@@ -175,5 +116,22 @@ public class MainActivity extends AppCompatActivity {
         canvas.drawText(gText, x, y, paint);
 
         return bitmap;
+    }
+
+    @Override
+    public void openDetailInfo(String url) {
+        Fragment mainFragment = getSupportFragmentManager().findFragmentByTag(MAIN_FRAGMENT);
+        Fragment detailFragment = getSupportFragmentManager().findFragmentByTag(DETAIL_FRAGMENT);
+        if (detailFragment == null) {
+            detailFragment = DetailFragment.getInstance(url);
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.flContainer, detailFragment, DETAIL_FRAGMENT)
+                .hide(mainFragment)
+                .show(detailFragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                .addToBackStack(null)
+                .commit();
     }
 }

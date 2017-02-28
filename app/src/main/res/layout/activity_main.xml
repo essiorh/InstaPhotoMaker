@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -13,51 +12,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="developer.essiorh.instaphotomaker.MainActivity">
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/etNick"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/enter_your_nick"
-            android:inputType="text"
-            android:maxLength="20"
-            android:textSize="20sp"/>
-    </android.support.design.widget.TextInputLayout>
-
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_backgroung"
-        android:onClick="loadImage"
-        android:shadowColor="#A8A8A8"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="5"
-        android:text="@string/load_last_photo"
-        android:textAllCaps="false"
-        android:textColor="#0947ff"
-        android:textSize="30sp"/>
-
     <FrameLayout
+        android:id="@+id/flContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/ivFresco"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="14dp"
-            fresco:actualImageScaleType="fitStart"/>
-
-        <ProgressBar
-            android:id="@+id/pbLoading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"/>
-    </FrameLayout>
+        android:layout_height="match_parent"/>
 </LinearLayout>

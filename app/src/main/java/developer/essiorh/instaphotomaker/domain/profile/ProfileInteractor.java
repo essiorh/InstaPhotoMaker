@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import developer.essiorh.instaphotomaker.NodesItem;
 import developer.essiorh.instaphotomaker.User;
 import developer.essiorh.instaphotomaker.data.rest.profile.IGetProfileRestApi;
 import developer.essiorh.instaphotomaker.data.rest.profile.ProfileResponse;
@@ -52,18 +53,20 @@ public class ProfileInteractor extends Interactor<ProfileResponse> implements IP
 
             @Override
             public void onNext(ProfileResponse profileResponse) {
-                String url;
                 User user = profileResponse.getUser();
-                if (user != null && user.getMedia() != null &&
-                        user.getMedia().getNodesItemList() != null &&
-                        user.getMedia().getNodesItemList().size() > 0) {
-                    url = user.getMedia().getNodesItemList().get(0).getThumbnailScr();
-                } else {
-                    url = "FAKE";
+                if (user == null) {
+                    return;
                 }
-                List<String> list = new ArrayList<>();
-                list.add(url);
-                subscriber.onNext(list);
+                List<NodesItem> nodesItemList = user.getMedia().getNodesItemList();
+                if (user.getMedia() != null &&
+                        nodesItemList != null &&
+                        nodesItemList.size() > 0) {
+                    List<String> resultList = new ArrayList<>();
+                    for (NodesItem item : nodesItemList) {
+                        resultList.add(item.getThumbnailScr());
+                    }
+                    subscriber.onNext(resultList);
+                }
             }
         };
     }
