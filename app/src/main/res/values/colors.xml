@@ -3,4 +3,5 @@
     <color name="colorPrimary">#8c9e50</color>
     <color name="colorPrimaryDark">#69763e</color>
     <color name="colorAccent">#32b603</color>
+    <color name="wait_image">#7db6ff7e</color>
 </resources>

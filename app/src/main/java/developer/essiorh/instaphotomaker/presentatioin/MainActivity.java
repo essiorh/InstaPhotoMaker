@@ -21,11 +21,6 @@ public class MainActivity extends AppCompatActivity implements MainRouter {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.flContainer, MainFragment.getInstance(), MAIN_FRAGMENT)

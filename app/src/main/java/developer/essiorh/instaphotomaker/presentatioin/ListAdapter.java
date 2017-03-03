@@ -40,12 +40,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         final String item = getItem(position);
         holder.ivFresco.setImageURI(item);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                router.openDetailInfo(item);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> router.openDetailInfo(item));
     }
 
     @Override

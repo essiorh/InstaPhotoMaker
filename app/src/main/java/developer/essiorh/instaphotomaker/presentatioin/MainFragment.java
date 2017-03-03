@@ -46,7 +46,7 @@ public class MainFragment extends Fragment {
     public static MainFragment getInstance() {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG_URLS, new ArrayList<String>());
+        args.putStringArrayList(ARG_URLS, new ArrayList<>());
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,15 +84,10 @@ public class MainFragment extends Fragment {
         if (!(getActivity() instanceof MainRouter)) {
             throw new IllegalStateException("Activity must be implement MainRouter interface");
         }
-        ListAdapter listAdapter = new ListAdapter(new ArrayList<String>(),
+        ListAdapter listAdapter = new ListAdapter(new ArrayList<>(),
                 (MainRouter) getActivity());
         rvList.setAdapter(listAdapter);
-        btnLoadImages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadImage(v);
-            }
-        });
+        btnLoadImages.setOnClickListener(this::loadImage);
     }
 
     public void loadImage(View view) {

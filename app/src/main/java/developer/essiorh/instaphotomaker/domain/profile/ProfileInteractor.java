@@ -1,14 +1,16 @@
 package developer.essiorh.instaphotomaker.domain.profile;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import developer.essiorh.instaphotomaker.data.rest.profile.models.NodesItem;
-import developer.essiorh.instaphotomaker.data.rest.profile.models.User;
 import developer.essiorh.instaphotomaker.data.rest.profile.IGetProfileRestApi;
+import developer.essiorh.instaphotomaker.data.rest.profile.models.NodesItem;
 import developer.essiorh.instaphotomaker.data.rest.profile.models.ProfileResponse;
+import developer.essiorh.instaphotomaker.data.rest.profile.models.User;
 import developer.essiorh.instaphotomaker.domain.common.Interactor;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -62,9 +64,12 @@ public class ProfileInteractor extends Interactor<ProfileResponse> implements IP
                         nodesItemList != null &&
                         nodesItemList.size() > 0) {
                     List<String> resultList = new ArrayList<>();
-                    for (NodesItem item : nodesItemList) {
-                        resultList.add(item.getThumbnailScr());
-                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                        resultList.addAll(nodesItemList.stream()
+                                .map(NodesItem::getThumbnailScr)
+                                .collect(Collectors.toList()));
+                    else
+                        for (NodesItem item : nodesItemList) resultList.add(item.getThumbnailScr());
                     subscriber.onNext(resultList);
                 }
             }

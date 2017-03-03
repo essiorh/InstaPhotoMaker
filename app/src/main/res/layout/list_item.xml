@@ -10,5 +10,6 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_margin="5dp"
-        fresco:actualImageScaleType="fitStart"/>
+        fresco:actualImageScaleType="fitStart"
+        fresco:placeholderImage="@color/wait_image"/>
 </LinearLayout>
