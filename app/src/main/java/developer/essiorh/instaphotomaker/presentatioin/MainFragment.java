@@ -1,4 +1,4 @@
-package developer.essiorh.instaphotomaker;
+package developer.essiorh.instaphotomaker.presentatioin;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -21,6 +21,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import developer.essiorh.instaphotomaker.R;
 import developer.essiorh.instaphotomaker.data.rest.profile.GetProfileRestApi;
 import developer.essiorh.instaphotomaker.data.rest.profile.IGetProfileRestApi;
 import developer.essiorh.instaphotomaker.domain.profile.IProfileInteractor;

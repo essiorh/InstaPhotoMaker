@@ -1,4 +1,4 @@
-package developer.essiorh.instaphotomaker;
+package developer.essiorh.instaphotomaker.common;
 
 import android.content.Context;
 import android.content.res.Resources;

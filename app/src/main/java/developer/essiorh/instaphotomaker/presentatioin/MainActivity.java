@@ -1,8 +1,10 @@
-package developer.essiorh.instaphotomaker;
+package developer.essiorh.instaphotomaker.presentatioin;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+
+import developer.essiorh.instaphotomaker.R;
 
 /**
  * Created by eSSiorh

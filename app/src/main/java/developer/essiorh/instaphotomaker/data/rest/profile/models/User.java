@@ -1,6 +1,8 @@
-package developer.essiorh.instaphotomaker;
+package developer.essiorh.instaphotomaker.data.rest.profile.models;
 
 import com.google.gson.annotations.SerializedName;
+
+import developer.essiorh.instaphotomaker.common.RestConst;
 
 /**
  * Created by eSSiorh
@@ -9,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class User {
 
-    @SerializedName("media")
+    @SerializedName(RestConst.ResponseFields.MEDIA)
     private Media media;
 
     public Media getMedia() {

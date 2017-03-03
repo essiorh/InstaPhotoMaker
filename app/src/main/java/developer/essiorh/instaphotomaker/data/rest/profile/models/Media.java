@@ -1,8 +1,10 @@
-package developer.essiorh.instaphotomaker;
+package developer.essiorh.instaphotomaker.data.rest.profile.models;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+
+import developer.essiorh.instaphotomaker.common.RestConst;
 
 /**
  * Created by eSSiorh
@@ -11,7 +13,7 @@ import java.util.List;
 
 public class Media {
 
-    @SerializedName("nodes")
+    @SerializedName(RestConst.ResponseFields.NODES)
     private List<NodesItem> nodesItemList;
 
     public List<NodesItem> getNodesItemList() {

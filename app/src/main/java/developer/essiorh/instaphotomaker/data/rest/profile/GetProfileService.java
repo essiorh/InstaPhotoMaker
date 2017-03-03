@@ -1,5 +1,6 @@
 package developer.essiorh.instaphotomaker.data.rest.profile;
 
+import developer.essiorh.instaphotomaker.data.rest.profile.models.ProfileResponse;
 import retrofit2.http.GET;
 import retrofit2.http.Url;
 import rx.Observable;

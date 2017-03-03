@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import developer.essiorh.instaphotomaker.NodesItem;
-import developer.essiorh.instaphotomaker.User;
+import developer.essiorh.instaphotomaker.data.rest.profile.models.NodesItem;
+import developer.essiorh.instaphotomaker.data.rest.profile.models.User;
 import developer.essiorh.instaphotomaker.data.rest.profile.IGetProfileRestApi;
-import developer.essiorh.instaphotomaker.data.rest.profile.ProfileResponse;
+import developer.essiorh.instaphotomaker.data.rest.profile.models.ProfileResponse;
 import developer.essiorh.instaphotomaker.domain.common.Interactor;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

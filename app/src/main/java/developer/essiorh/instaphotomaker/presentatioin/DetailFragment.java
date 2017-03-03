@@ -1,4 +1,4 @@
-package developer.essiorh.instaphotomaker;
+package developer.essiorh.instaphotomaker.presentatioin;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+
+import developer.essiorh.instaphotomaker.R;
 
 /**
  * Created by eSSiorh

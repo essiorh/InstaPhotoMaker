@@ -1,7 +1,8 @@
 package developer.essiorh.instaphotomaker.data.rest.profile;
 
-import developer.essiorh.instaphotomaker.RestConst;
+import developer.essiorh.instaphotomaker.common.RestConst;
 import developer.essiorh.instaphotomaker.data.rest.common.ServiceFactory;
+import developer.essiorh.instaphotomaker.data.rest.profile.models.ProfileResponse;
 import rx.Observable;
 
 /**

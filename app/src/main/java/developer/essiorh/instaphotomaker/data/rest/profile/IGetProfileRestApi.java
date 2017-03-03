@@ -1,5 +1,6 @@
 package developer.essiorh.instaphotomaker.data.rest.profile;
 
+import developer.essiorh.instaphotomaker.data.rest.profile.models.ProfileResponse;
 import rx.Observable;
 
 /**

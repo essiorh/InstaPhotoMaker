@@ -1,4 +1,4 @@
-package developer.essiorh.instaphotomaker;
+package developer.essiorh.instaphotomaker.presentatioin;
 
 /**
  * Created by eSSiorh
