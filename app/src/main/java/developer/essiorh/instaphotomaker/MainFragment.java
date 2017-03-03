@@ -35,17 +35,36 @@ import rx.Subscriber;
 public class MainFragment extends Fragment {
 
     private static final String TAG = MainFragment.class.getSimpleName();
+    public static final String ARG_URLS = "ARR";
     private RecyclerView rvList;
     private EditText etNick;
     private ProgressBar pbLoading;
     private Button btnLoadImages;
+    private View view;
+
+    public static MainFragment getInstance() {
+        MainFragment fragment = new MainFragment();
+        Bundle args = new Bundle();
+        args.putStringArrayList(ARG_URLS, new ArrayList<String>());
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
+    @SuppressLint("InflateParams")
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        @SuppressLint("InflateParams") View view =
-                LayoutInflater.from(getContext()).inflate(R.layout.fragment_main, null);
+        ArrayList<String> urls = getArguments().getStringArrayList(ARG_URLS);
+        if (urls != null && urls.size() > 0 && view != null) {
+            return view;
+        }
+        view = inflater.inflate(R.layout.fragment_main, null);
         etNick = (EditText) view.findViewById(R.id.etNick);
         pbLoading = (ProgressBar) view.findViewById(R.id.pbLoading);
         rvList = (RecyclerView) view.findViewById(R.id.rvList);
@@ -56,6 +75,10 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ArrayList<String> urls = getArguments().getStringArrayList(ARG_URLS);
+        if (urls != null && urls.size() > 0) {
+            return;
+        }
         rvList.setLayoutManager(new GridLayoutManager(getContext(), 3));
         if (!(getActivity() instanceof MainRouter)) {
             throw new IllegalStateException("Activity must be implement MainRouter interface");
@@ -110,6 +133,7 @@ public class MainFragment extends Fragment {
                     listAdapter.updateData(strings);
                     Toast.makeText(getContext(), "Фотки загружены", Toast.LENGTH_SHORT).show();
                 }
+                getArguments().putStringArrayList(ARG_URLS, new ArrayList<>(strings));
             }
         }, nick.trim());
     }
