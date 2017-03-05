@@ -3,6 +3,7 @@ package developer.essiorh.instaphotomaker.presentatioin;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import developer.essiorh.instaphotomaker.R;
 
@@ -36,5 +37,22 @@ public class MainActivity extends AppCompatActivity implements MainRouter {
                 .addToBackStack(null)
                 .commit();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        System.out.println("asdfasdf");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        System.out.println("MainActivity.onOptionsItemSelected");
+        if (item.getItemId() == android.R.id.home &&
+                getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
